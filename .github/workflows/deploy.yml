@@ -1,21 +1,33 @@
-name: pages-build-deployment
+name: Deploy to GitHub Pages
 
 on:
   push:
     branches:
-      - main
+      - main  # Change if your default branch is different
+  workflow_dispatch:  # Enables manual execution from the Actions tab
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     permissions:
-      id-token: write
-      contents: read
+      id-token: write  # Fix for "Failed to get ID Token" error
+      contents: read   # Read repository contents
+
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'  # Ensure a compatible Node.js version
+
+      - name: Install dependencies
+        run: npm install  # If needed for a build process
+
+      - name: Build project
+        run: npm run build  # Change this if you have a different build step
 
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
-        
-          # additional configuration options
